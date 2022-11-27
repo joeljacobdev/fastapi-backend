@@ -40,3 +40,16 @@ services:
       - ./data/kibana:/usr/share/elasticsearch/data
     ports:
       - "9600:5601"
+  app:
+    build:
+      context: ../
+      dockerfile: deploy/Dockerfile
+    depends_on:
+      - db-master
+      - elasticsearch
+    environment:
+      - DATABASE_URL
+    volumes:
+      - ../:/usr/src/app
+    ports:
+      - "8000:8000"
