@@ -13,6 +13,17 @@ class CommonSetting(BaseSettings):
     AWS_SECRET_KEY: str = os.environ.get('AWS_SECRET_KEY', '')
     AWS_DEFAULT_REGION: str = os.environ.get('AWS_DEFAULT_REGION', '')
     AWS_SECRET_FILE: str = os.environ.get('AWS_SECRET_FILE', '')
+    DATABASES_CONFIG = {
+        "connections": {"default": os.environ['DATABASE_URL']},
+        "apps": {
+            "models": {
+                "models": ["__main__"],
+                "default_connection": "master",
+            }
+        },
+        "use_tz": False,
+        "timezone": "UTC",
+    }
 
     class Config:
         @classmethod
