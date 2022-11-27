@@ -14,6 +14,7 @@ elasticsearch = "==8.5.2"
 gunicorn = "==20.1.0"
 pydantic = "==1.10.2"
 aiobotocore = "==2.4.0"
+orjson = "==3.8.2"
 
 [dev-packages]
 
