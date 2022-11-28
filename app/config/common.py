@@ -18,7 +18,7 @@ class CommonSetting(BaseSettings):
         "apps": {
             "models": {
                 "models": ["__main__"],
-                "default_connection": "master",
+                "default_connection": "default",
             }
         },
         "use_tz": False,
