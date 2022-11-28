@@ -15,13 +15,13 @@ services:
     ports:
       - "9500:5432"
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
     environment:
       - cluster.name=app-es-cluster
       - discovery.type=single-node
       - bootstrap.memory_lock=true
       - xpack.security.enabled=false
-      - http.cors.enabled='true'
+      - http.cors.enabled=true
       - http.cors.allow-origin="*"
       - http.cors.allow-methods=OPTIONS, HEAD, GET, POST, PUT, DELETE
       - http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type, Content-Length
@@ -33,7 +33,7 @@ services:
   kibana:
     depends_on:
       - elasticsearch
-    image: docker.elastic.co/kibana/kibana:8.5.2
+    image: docker.elastic.co/kibana/kibana:7.17.0
     environment:
       - SERVERNAME=kibana
     volumes:
