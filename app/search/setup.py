@@ -1,11 +1,12 @@
 from elasticsearch import AsyncElasticsearch
 
-es = AsyncElasticsearch(hosts=['0.0.0.0'])
+es = None
 
 
-async def setup():
+async def setup(config):
     # setup connections
     # update mapping
+    es = AsyncElasticsearch(hosts=config['hosts'])
     return es
 
 

@@ -1,0 +1,5 @@
+FROM docker.elastic.co/elasticsearch/elasticsearch:8.5.2
+RUN curl -L -O https://artifacts.elastic.co/downloads/beats/elastic-agent/elastic-agent-8.5.2-linux-x86_64.tar.gz && \
+    tar xzvf elastic-agent-8.5.2-linux-x86_64.tar.gz && \
+    rm elastic-agent-8.5.2-linux-x86_64.tar.gz && \
+    mv elastic-agent-8.5.2-linux-x86_64 agent

@@ -13,7 +13,6 @@ asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 setting = getattr(import_module(get_config()), 'Setting')()
 
 app = FastAPI()
-es = search_setup.setup()
 app.router.route_class = api_route.CustomRoute
 app.include_router(app_router.router)
 
@@ -21,10 +20,10 @@ app.include_router(app_router.router)
 @app.on_event('startup')
 async def on_startup():
     await db_setup.setup(setting.DATABASES_CONFIG)
-    await search_setup.setup()
+    await search_setup.setup(setting.ELASTIC_CONFIG)
 
 
 @app.on_event('shutdown')
 async def on_shutdown():
     await db_setup.cleanup()
-    await search_setup.setup()
+    await search_setup.cleanup()
