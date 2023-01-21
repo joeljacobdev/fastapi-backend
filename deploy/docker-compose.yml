@@ -1,123 +1,124 @@
 version: '3.9'
 services:
-    db-master:
-      image: postgres:14.6
-      command:
-        - "postgres"
-        - "-c"
-        - "max_connections=200"
-      environment:
-        - POSTGRES_DB
-        - POSTGRES_USER
-        - POSTGRES_PASSWORD
-      volumes:
-        - ./data/maindb:/var/lib/postgresql/data
-      ports:
-        - "9500:5432"
-      deploy:
-        resources:
-          limits:
-            cpus: '1'
-            memory: 762M
-    elasticsearch:
-      build:
-        context: .
-        dockerfile: Dockerfile-es
-      environment:
-        - ELASTICSEARCH_USERNAME
-        - ELASTICSEARCH_PASSWORD
-        - cluster.name=app-es-cluster
-        - discovery.type=single-node
-        - bootstrap.memory_lock=true
-        - xpack.security.enabled=true
-        - xpack.security.http.ssl.enabled=false
-        - xpack.license.self_generated.type=basic
-        - ingest.geoip.downloader.enabled=false
-        - FLEET_ENROLL_INSECURE=1
-        - FLEET_URL
-        - FLEET_ENROLL
-        - FLEET_ENROLLMENT_TOKEN
-      volumes:
-        - ./data/es:/usr/share/elasticsearch/data
-      ports:
-        - "9700:9200"
-      deploy:
-        resources:
-          limits:
-            cpus: '1'
-            memory: 2048M
-      healthcheck:
-        test:  curl -s -u $ELASTICSEARCH_USERNAME:$ELASTICSEARCH_PASSWORD http://elasticsearch:9200 > /dev/null || exit 1
-        interval: 1s
-        timeout: 5s
-        retries: 100
-    kibana:
-      depends_on:
-        elasticsearch:
-          condition: service_healthy
-      image: docker.elastic.co/kibana/kibana:8.5.2
-      environment:
-        SERVERNAME: kibana
-        ELASTICSEARCH_USERNAME: kibana_system
-        ELASTICSEARCH_PASSWORD: $ELASTICSEARCH_PASSWORD
-        ELASTICSEARCH_HOSTS: '["http://elasticsearch:9200"]'
-        xpack.fleet.enabled: $KIBANA_FLEET_ENABLED
-        xpack.fleet.agents.enabled: true
-        xpack.fleet.agents.elasticsearch.host: "http://elasticsearch:9200"
-        xpack.fleet.agents.fleet_server.hosts: '["http://fleet-server:8220"]'
-      volumes:
-        - ./data/kibana:/usr/share/kibana/data
-      ports:
-        - "9600:5601"
-      deploy:
-        resources:
-          limits:
-            cpus: '0.50'
-            memory: 512M
-      healthcheck:
-        test: curl -s -u $ELASTICSEARCH_USERNAME:$ELASTICSEARCH_PASSWORD http://kibana:5601/api/status || exit 1
-        interval: 1s
-        timeout: 5s
-        retries: 100
-    fleet-server:
-      depends_on:
-        elasticsearch:
-          condition: service_healthy
-        kibana:
-          condition: service_healthy
-      image: docker.elastic.co/beats/elastic-agent:8.5.2
-      restart: always
-      hostname: 'docker-fleet-server'
-      user: root # note, synthetic browser monitors require this set to `elastic-agent`
-      environment:
-        - ELASTICSEARCH_HOST=http://elasticsearch:9200
-        - ELASTICSEARCH_PASSWORD
-        - KIBANA_HOST=http://kibana:5601
-        - FLEET_SERVER_INSECURE_HTTP=1
-        - FLEET_SERVER_ENABLE
-        - FLEET_SERVER_SERVICE_TOKEN
-        - FLEET_SERVER_POLICY_ID
-      healthcheck:
-        test: "curl -f http://127.0.0.1:8220/api/status | grep HEALTHY 2>&1 >/dev/null"
-        retries: 30
-        interval: 5s
-      deploy:
-        resources:
-          limits:
-            cpus: '0.50'
-            memory: 512M
-      ports:
-        - "9610:8220"
-    app:
-      build:
-        context: ../
-        dockerfile: deploy/Dockerfile
-      depends_on:
-        - db-master
-        - elasticsearch
-      environment:
-        - DATABASE_URL
-      volumes:
-        - ../:/usr/src/app
-      ports:
-        - "8000:8000"
+  db-master:
+    image: postgres:14.6
+    command:
+      - "postgres"
+      - "-c"
+      - "max_connections=200"
+    environment:
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+    volumes:
+      - ./data/maindb:/var/lib/postgresql/data
+    ports:
+      - "9500:5432"
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 762M
+  elasticsearch:
+    build:
+      context: .
+      dockerfile: Dockerfile-es
+    environment:
+      - ELASTICSEARCH_USERNAME
+      - ELASTICSEARCH_PASSWORD
+      - cluster.name=app-es-cluster
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=false
+      - xpack.license.self_generated.type=basic
+      - ingest.geoip.downloader.enabled=false
+      - FLEET_ENROLL_INSECURE=1
+      - FLEET_URL
+      - FLEET_ENROLL
+      - FLEET_ENROLLMENT_TOKEN
+    volumes:
+      - ./data/es:/usr/share/elasticsearch/data
+    ports:
+      - "9700:9200"
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2048M
+    healthcheck:
+      test: curl -s -u $ELASTICSEARCH_USERNAME:$ELASTICSEARCH_PASSWORD http://elasticsearch:9200 > /dev/null || exit 1
+      interval: 1s
+      timeout: 5s
+      retries: 100
+  kibana:
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    image: docker.elastic.co/kibana/kibana:8.5.2
+    environment:
+      SERVERNAME: kibana
+      ELASTICSEARCH_USERNAME: kibana_system
+      ELASTICSEARCH_PASSWORD: $ELASTICSEARCH_PASSWORD
+      ELASTICSEARCH_HOSTS: '["http://elasticsearch:9200"]'
+      xpack.fleet.enabled: $KIBANA_FLEET_ENABLED
+      xpack.fleet.agents.enabled: true
+      xpack.fleet.agents.elasticsearch.host: "http://elasticsearch:9200"
+      xpack.fleet.agents.fleet_server.hosts: '["http://fleet-server:8220"]'
+    volumes:
+      - ./data/kibana:/usr/share/kibana/data
+    ports:
+      - "9600:5601"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+    healthcheck:
+      test: curl -s -u $ELASTICSEARCH_USERNAME:$ELASTICSEARCH_PASSWORD http://kibana:5601/api/status || exit 1
+      interval: 1s
+      timeout: 5s
+      retries: 100
+  fleet-server:
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      kibana:
+        condition: service_healthy
+    image: docker.elastic.co/beats/elastic-agent:8.5.2
+    restart: always
+    hostname: 'docker-fleet-server'
+    user: root # note, synthetic browser monitors require this set to `elastic-agent`
+    environment:
+      - ELASTICSEARCH_HOST=http://elasticsearch:9200
+      - ELASTICSEARCH_PASSWORD
+      - KIBANA_HOST=http://kibana:5601
+      - FLEET_SERVER_INSECURE_HTTP=1
+      - FLEET_SERVER_ENABLE
+      - FLEET_SERVER_SERVICE_TOKEN
+      - FLEET_SERVER_POLICY_ID
+    healthcheck:
+      test: "curl -f http://127.0.0.1:8220/api/status | grep HEALTHY 2>&1 >/dev/null"
+      retries: 30
+      interval: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+    ports:
+      - "9610:8220"
+  app:
+    build:
+      context: ../
+      dockerfile: deploy/Dockerfile
+    depends_on:
+      - db-master
+      - elasticsearch
+    environment:
+      - DATABASE_URL
+    volumes:
+      - ../:/usr/src/app
+    ports:
+      - "8000:8000"
+    network_mode: host

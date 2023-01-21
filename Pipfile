@@ -15,8 +15,10 @@ gunicorn = "==20.1.0"
 pydantic = "==1.10.2"
 aiobotocore = "==2.4.0"
 orjson = "==3.8.2"
+faker = "*"
 
 [dev-packages]
+faker = "==16.6.0"
 
 [requires]
 python_version = "3.10"

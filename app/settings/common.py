@@ -14,7 +14,7 @@ class CommonSetting(BaseSettings):
     AWS_DEFAULT_REGION: str = os.environ.get('AWS_DEFAULT_REGION', '')
     AWS_SECRET_FILE: str = os.environ.get('AWS_SECRET_FILE', '')
     ELASTIC_CONFIG = {
-        'hosts': ['http://0.0.0.0:9700']
+        'hosts': ['http://elastic_user:password@0.0.0.0:9700']
     }
     DATABASES_CONFIG = {
         "connections": {"default": os.environ['DATABASE_URL']},

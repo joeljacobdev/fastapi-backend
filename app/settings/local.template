@@ -1,4 +1,4 @@
-from app.config.common import CommonSetting
+from app.settings.common import CommonSetting
 
 
 class Setting(CommonSetting):

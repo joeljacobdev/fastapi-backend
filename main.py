@@ -1,16 +1,17 @@
 import asyncio
-import uvloop
 from importlib import import_module
+
+import uvloop
 from fastapi import FastAPI
 
-from app.search import setup as search_setup
 from app.db import setup as db_setup
-from app.config import get_config
-from app.fastapi import route as api_route
 from app.domain import router as app_router
+from app.fastapi import route as api_route
+from app.search import setup as search_setup
+from app.settings import get_settings
 
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-setting = getattr(import_module(get_config()), 'Setting')()
+setting = getattr(import_module(get_settings()), 'Setting')()
 
 app = FastAPI()
 app.router.route_class = api_route.CustomRoute

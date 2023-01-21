@@ -1,14 +1,13 @@
 from elasticsearch import AsyncElasticsearch
-
-es = None
+import app.search as search_app
 
 
 async def setup(config):
     # setup connections
     # update mapping
-    es = AsyncElasticsearch(hosts=config['hosts'])
-    return es
+    search_app.es_client = AsyncElasticsearch(hosts=config['hosts'])
+    return search_app.es_client
 
 
 async def cleanup():
-    await es.close()
+    await search_app.es_client.close()

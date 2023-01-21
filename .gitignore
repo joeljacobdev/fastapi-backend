@@ -37,6 +37,10 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+perf8-report/
+
+# OS specific file
+.DS_Store
 
 # Pycharm stuff
 .idea/
@@ -45,4 +49,4 @@ cython_debug/
 # APP specific
 deploy/.env
 deploy/data
-app/config/local.py
+app/settings/local.py
