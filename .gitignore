@@ -44,7 +44,10 @@ perf8-report/
 
 # Pycharm stuff
 .idea/
+.run/
 
+# secrets
+firebase-admin-service-account.json
 
 # APP specific
 deploy/.env

@@ -1,8 +1,10 @@
-import os
-import logging
 import json
-from pydantic import BaseSettings, AnyHttpUrl
+import logging
+import os
+from pathlib import Path
+
 from botocore.session import get_session
+from pydantic import BaseSettings, AnyHttpUrl
 
 logger = logging.getLogger(__name__)
 
@@ -27,6 +29,7 @@ class CommonSetting(BaseSettings):
         "use_tz": False,
         "timezone": "UTC",
     }
+    FIREBASE_ADMIN_CONFIG: dict = {}
 
     class Config:
         @classmethod
@@ -48,6 +51,11 @@ class CommonSetting(BaseSettings):
                 secrets: dict = json.loads(client.get_secret_value(SecretId=secret_name)['SecretString'])
                 for secret_key, value in secrets.items():
                     init_settings.init_kwargs[secret_key] = json.loads(value)
+            firebase_admin_config_file = Path('firebase-admin-service-account.json')
+            if firebase_admin_config_file.exists():
+                init_settings.init_kwargs['FIREBASE_ADMIN_CONFIG'] = json.loads(
+                    firebase_admin_config_file.read_text('utf-8')
+                )
             return (
                 init_settings,
                 env_settings,
