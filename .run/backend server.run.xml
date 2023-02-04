@@ -7,8 +7,7 @@
     <envs>
       <env name="DATABASE_URL" value="postgres://joel:joeljacob@0.0.0.0:9500/fastapi" />
     </envs>
-    <option name="SDK_HOME" value="$USER_HOME$/.local/share/virtualenvs/fastapi-backend-I5otppco/bin/python" />
-    <option name="SDK_NAME" value="Python 3.10 (fastapi-backend-I5otppco)" />
+    <option name="SDK_HOME" value="" />
     <option name="WORKING_DIRECTORY" value="" />
     <option name="IS_MODULE_SDK" value="false" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
