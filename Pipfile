@@ -16,6 +16,7 @@ aiobotocore = "==2.4.0"
 orjson = "==3.8.2"
 faker = "*"
 firebase-admin = "==6.0.1"
+sqlalchemy = "==2.0.5"
 
 [dev-packages]
 faker = "==16.6.0"
