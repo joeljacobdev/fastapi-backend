@@ -19,11 +19,11 @@ app.include_router(app_router.router)
 @app.on_event('startup')
 async def on_startup():
     await db_setup.setup(setting.DATABASES_CONFIG)
-    await search_setup.setup(setting.ELASTIC_CONFIG)
+    # await search_setup.setup(setting.ELASTIC_CONFIG)
     await firebase_setup.setup(setting.FIREBASE_ADMIN_CONFIG)
 
 
 @app.on_event('shutdown')
 async def on_shutdown():
     await db_setup.cleanup()
-    await search_setup.cleanup()
+    # await search_setup.cleanup()
